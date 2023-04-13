@@ -85,7 +85,7 @@ spec:
       - emptyDir: {}
         name: workdir
       {{- end }}
-      {{- if index .Values "taints" "enabled" }}
+      {{- if index .Values.taints.enabled }}
       tolerations: {{- range $key, $value := .Values.taints.list }}
         -  key: {{ $value.key }}
            operator: {{ $value.operator }}
