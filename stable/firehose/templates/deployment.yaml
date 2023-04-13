@@ -86,10 +86,23 @@ spec:
         name: workdir
       {{- end }}
       {{- if (gt (len .Values.tolerations) 0) }}
-      tolerations: {{- range $_, $value := .Values.tolerations }}
-        -  key: {{ $value.key }}
-           operator: {{ $value.operator }}
-           value: {{ $value.value }}
-           effect: {{ $value.effect }}
+      tolerations: {{- range $_, $toleration := .Values.tolerations }}
+        - key: {{ $toleration.key }}
+          operator: {{ $toleration.operator }}
+          value: {{ $toleration.value }}
+          effect: {{ $toleration.effect }}
         {{- end }}
+      {{- end}}
+      {{- if (gt (len .Values.affinity) 0) }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions: {{- range $_, $expression := .Values.affinity }}
+                  - key: {{ $expression.key }}
+                    operator: {{ $expression.operator }}
+                    values: {{- range $expression.values }}
+                      - {{ . }}
+                    {{- end}}
+                {{- end}}
       {{- end}}

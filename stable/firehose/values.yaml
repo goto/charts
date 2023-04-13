@@ -40,6 +40,8 @@ firehose:
 
 tolerations: []
 
+affinity: []
+
 init-firehose:
   enabled: false
   image:
