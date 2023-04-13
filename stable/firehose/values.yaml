@@ -40,7 +40,9 @@ firehose:
 
 tolerations: []
 
-affinity: []
+nodeAffinitiyMatchExpressions:
+  requiredDuringSchedulingIgnoredDuringExecution: []
+  preferredDuringSchedulingIgnoredDuringExecution: []
 
 init-firehose:
   enabled: false

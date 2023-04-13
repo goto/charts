@@ -93,16 +93,31 @@ spec:
           effect: {{ $toleration.effect }}
         {{- end }}
       {{- end}}
-      {{- if (gt (len .Values.affinity) 0) }}
+      {{- if or (gt (len .Values.nodeAffinitiyMatchExpressions.requiredDuringSchedulingIgnoredDuringExecution) 0) (gt (len .Values.nodeAffinitiyMatchExpressions.preferredDuringSchedulingIgnoredDuringExecution) 0) }}
       affinity:
         nodeAffinity:
+          {{- if (gt (len .Values.nodeAffinitiyMatchExpressions.requiredDuringSchedulingIgnoredDuringExecution) 0) }}
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions: {{- range $_, $expression := .Values.affinity }}
+              - matchExpressions: {{- range $_, $expression := .Values.nodeAffinitiyMatchExpressions.requiredDuringSchedulingIgnoredDuringExecution }}
                   - key: {{ $expression.key }}
                     operator: {{ $expression.operator }}
                     values: {{- range $expression.values }}
                       - {{ . }}
                     {{- end}}
+              {{- end}}
+          {{- end}}
+          {{- if (gt (len .Values.nodeAffinitiyMatchExpressions.preferredDuringSchedulingIgnoredDuringExecution) 0) }}
+          preferredDuringSchedulingIgnoredDuringExecution: {{- range $_, $expression := .Values.nodeAffinitiyMatchExpressions.preferredDuringSchedulingIgnoredDuringExecution }}
+            - weight: {{ $expression.weight}}   
+              preference:   
+                matchExpressions: {{- range $_, $pref := $expression.preference }}   
+                  - key: {{ $pref.key }}
+                    operator: {{ $pref.operator }}
+                    values: {{- range $pref.values }}
+                      - {{ . }}
+                    {{- end}}
                 {{- end}}
+          {{- end}}
+          {{- end}}
       {{- end}}
