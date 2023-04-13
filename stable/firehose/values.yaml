@@ -38,9 +38,7 @@ firehose:
       cpu: 200m
       memory: 512Mi
 
-taints: 
-  enabled: false
-  list: {}
+tolerations: []
 
 init-firehose:
   enabled: false
