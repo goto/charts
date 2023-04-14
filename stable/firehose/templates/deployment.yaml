@@ -29,12 +29,12 @@ spec:
         name: {{ .Chart.Name }}
         image: "{{ .Values.firehose.image.repository }}:{{ .Values.firehose.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.firehose.image.pullPolicy }}
+        {{- if or (index .Values "init-firehose" "enabled") (gt (len .Values.volumeMounts) 0) }}
         volumeMounts:
         {{- if index .Values "init-firehose" "enabled" }}
         - mountPath: /work-dir
           name: workdir
         {{- end }}
-        {{- if or (gt (len .Values.volumeMounts) 0) }}
         {{- range $_, $volumeMount := .Values.volumeMounts }}
         - name: {{ $volumeMount.name}}
           mountPath: {{ $volumeMount.mountPath }}
@@ -81,6 +81,7 @@ spec:
         - mountPath: /work-dir
           name: workdir
       {{- end }}
+      {{if or (index .Values.telegraf.enabled) (index .Values "init-firehose" "enabled") (gt (len .Values.volumes) 0)}}
       volumes:
       {{- if index .Values.telegraf.enabled }}
       - configMap:
@@ -91,7 +92,6 @@ spec:
       - emptyDir: {}
         name: workdir
       {{- end }}
-      {{- if or (gt (len .Values.volumes) 0) }}
       {{- range $_, $volume := .Values.volumes }}
       - name: {{ $volume.name}}
         secretName: {{ $volume.secretName }}
