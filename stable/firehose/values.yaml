@@ -43,9 +43,38 @@ tolerations: []
 
 volumes: []
 
-nodeAffinitiyMatchExpressions:
-  requiredDuringSchedulingIgnoredDuringExecution: []
-  preferredDuringSchedulingIgnoredDuringExecution: []
+nodeAffinityMatchExpressions:
+  requiredDuringSchedulingIgnoredDuringExecution:
+  - key: "k1"
+    operator: "Equal"
+    values:
+      - "v11"
+      - "v12"
+  - key: "k2"
+    operator: "Equal"
+    values:
+      - "v21"
+      - "v22"
+  preferredDuringSchedulingIgnoredDuringExecution:
+  - weight: "1"
+    preference:
+      - key: "k1"
+        operator: "Equal"
+        values:
+          - "v001"
+          - "v002"
+      - key: "k2"
+        operator: "Equal"
+        values:
+          - "v003"
+          - "v004"
+  - weight: "2"
+    preference:
+      - key: "k3"
+        operator: "Equal"
+        values:
+          - "v005"
+          - "v005"
 
 init-firehose:
   enabled: false
@@ -57,7 +86,7 @@ init-firehose:
   args: [wget -O /work-dir/protos.jar http://proto_jar_url.jar]
 
 telegraf:
-  enabled: false
+  enabled: true
   image:
     repository: telegraf
     pullPolicy: IfNotPresent
