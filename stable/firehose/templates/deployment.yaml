@@ -81,7 +81,7 @@ spec:
         - mountPath: /work-dir
           name: workdir
       {{- end }}
-      {{if or (index .Values.telegraf.enabled) (index .Values "init-firehose" "enabled") (gt (len .Values.secretsAsVolume) 0)}}
+      {{if or (index .Values.telegraf.enabled) (index .Values "init-firehose" "enabled") (gt (len .Values.secretsAsVolumes) 0)}}
       volumes:
       {{- if index .Values.telegraf.enabled }}
       - configMap:
@@ -92,7 +92,7 @@ spec:
       - emptyDir: {}
         name: workdir
       {{- end }}
-      {{- range $_, $volume := .Values.secretsAsVolume }}
+      {{- range $_, $volume := .Values.secretsAsVolumes }}
       - name: {{ $volume.name}}
         secret:
           secretName: {{ $volume.secretName }}

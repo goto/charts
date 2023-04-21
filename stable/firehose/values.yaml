@@ -41,7 +41,7 @@ firehose:
 
 tolerations: []
 
-secretsAsVolume: []
+secretsAsVolumes: []
 
 nodeAffinityMatchExpressions:
   requiredDuringSchedulingIgnoredDuringExecution: []
