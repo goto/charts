@@ -36,7 +36,7 @@ spec:
                 - configMapRef:
                     name: {{ $fullName }}
                 - secretRef:
-                    name: {{ $fullName }}-secret
+                    name: {{ $fullName }}
           restartPolicy: {{ $job.restartPolicy }}
 ---
 {{- end -}}
