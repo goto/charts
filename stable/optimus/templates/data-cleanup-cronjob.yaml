@@ -1,0 +1,21 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: operator-run-cleanup
+spec:
+  schedule: "0 0 1 * *"  # Runs At 00:00 on day-of-month 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: operator-run-cleanup
+            image: postgres:15.2-alpine3.17
+            envFrom:
+            - configMapRef:
+                name: {{ template "app.fullname" . }}
+            env:
+            - name: QUERIES
+              value: "{{- range .Values.cleanupConfig.queries -}} {{.}} {{- end }}"
+            command: ["sh", "-c", "set -x; echo $QUERIES; psql $OPTIMUS_SERVE_DB_DSN -c \"$QUERIES\";"]
+          restartPolicy: OnFailure

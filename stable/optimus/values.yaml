@@ -68,6 +68,13 @@ config:
 
 secretConfig: {}
 
+cleanupConfig:
+  queries:
+    - "delete from sensor_run where start_time < now() - Interval '30d';"
+    - "delete from task_run   where start_time < now() - Interval '30d';"
+    - "delete from hook_run   where start_time < now() - Interval '30d';"
+    - "delete from job_run    where start_time < now() - Interval '60d';"
+
 service:
   type: ClusterIP
   ports:
