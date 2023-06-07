@@ -147,7 +147,7 @@ telegraf:
     - telegraf
 
 otelcollector:
-  enabled: true
+  enabled: false
   image: otel/opentelemetry-collector-contrib:0.79.0
   config: |
     receivers:
