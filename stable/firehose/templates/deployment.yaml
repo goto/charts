@@ -92,7 +92,7 @@ spec:
         - mountPath: /work-dir
           name: workdir
       {{- end }}
-      {{if or (index .Values.telegraf.enabled) (index .Values "init-firehose" "enabled") (gt (len .Values.secretsAsVolumes) 0)}}
+      {{if or (index .Values.telegraf.enabled) (index .Values "init-firehose" "enabled") (ne (get .Values.secrets "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_NAME" ) "") (ne (get .Values.secrets "FIREHOSE_DLQ_GCS_CREDENTIAL_NAME" ) "") (ne (get .Values.secrets "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_NAME" ) "")  }}
       volumes:
       {{- if index .Values.telegraf.enabled }}
       - configMap:
