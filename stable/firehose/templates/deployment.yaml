@@ -29,28 +29,17 @@ spec:
         name: {{ .Chart.Name }}
         image: "{{ .Values.firehose.image.repository }}:{{ .Values.firehose.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.firehose.image.pullPolicy }}
-        {{if or (index .Values "init-firehose" "enabled") (ne (get .Values.secrets "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_NAME" ) "") (ne (get .Values.secrets "FIREHOSE_DLQ_GCS_CREDENTIAL_NAME" ) "") (ne (get .Values.secrets "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_NAME" ) "")  }}
+        {{- if or (index .Values "init-firehose" "enabled") (gt (len .Values.mountSecrets) 0 ) }}
         volumeMounts:
         {{- if index .Values "init-firehose" "enabled" }}
         - mountPath: /work-dir
           name: workdir
         {{- end }}
-        {{- if (ne (get .Values.secrets "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_NAME" ) "") }}
-        {{ $SINK_BLOB_GCS_CREDENTIALS := pick .Values.secrets "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_NAME" "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_PATH" }}
-        - name: {{ get $SINK_BLOB_GCS_CREDENTIALS "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_NAME" }}
-          mountPath: {{ get $SINK_BLOB_GCS_CREDENTIALS "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_PATH" }}
-        {{- end}}
-        {{- if (ne (get .Values.secrets "FIREHOSE_DLQ_GCS_CREDENTIAL_NAME" ) "") }}
-        {{ $DLQ_GCS_CREDENTIAL := pick .Values.secrets "FIREHOSE_DLQ_GCS_CREDENTIAL_NAME" "FIREHOSE_DLQ_GCS_CREDENTIAL_PATH" }}
-        - name: {{ get $DLQ_GCS_CREDENTIAL "FIREHOSE_DLQ_GCS_CREDENTIAL_NAME" }}
-          mountPath: {{ get $DLQ_GCS_CREDENTIAL "FIREHOSE_DLQ_GCS_CREDENTIAL_PATH" }}
-        {{- end}}
-        {{- if (ne (get .Values.secrets "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_NAME" ) "") }}
-        {{ $SINK_BIGQUERY_CREDENTIALS := pick .Values.secrets "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_NAME" "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_PATH" }}
-        - name: {{ get $SINK_BIGQUERY_CREDENTIALS "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_NAME" }}
-          mountPath: {{ get $SINK_BIGQUERY_CREDENTIALS "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_PATH" }}
-        {{- end}}
-        {{- end}}
+        {{- range $_, $mountSecret := .Values.mountSecrets }}
+        - mountPath: {{ $mountSecret.path }}
+          name: {{ $mountSecret.name }}
+        {{- end }}
+        {{- end }}
         resources:
           {{- toYaml .Values.firehose.resources | nindent 12 }}
         envFrom:
@@ -94,7 +83,7 @@ spec:
         - mountPath: /work-dir
           name: workdir
       {{- end }}
-      {{if or (index .Values.telegraf.enabled) (index .Values "init-firehose" "enabled") (ne (get .Values.secrets "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_NAME" ) "") (ne (get .Values.secrets "FIREHOSE_DLQ_GCS_CREDENTIAL_NAME" ) "") (ne (get .Values.secrets "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_NAME" ) "")  }}
+      {{if or (index .Values.telegraf.enabled) (index .Values "init-firehose" "enabled") (gt (len .Values.mountSecrets) 0 ) }}
       volumes:
       {{- if index .Values.telegraf.enabled }}
       - configMap:
@@ -105,31 +94,10 @@ spec:
       - emptyDir: {}
         name: workdir
       {{- end }}
-      {{- if (ne (get .Values.secrets "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_NAME" ) "") }}
-      {{ $SINK_BLOB_GCS_CREDENTIALS := pick .Values.secrets "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_NAME" }}
-      - name: {{ get $SINK_BLOB_GCS_CREDENTIALS "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_NAME" }}
+      {{- range $_, $mountSecret := .Values.mountSecrets }}
+      - name: {{ $mountSecret.name }}
         secret:
-          secretName: {{ get $SINK_BLOB_GCS_CREDENTIALS "FIREHOSE_SINK_BLOB_GCS_CREDENTIAL_NAME" }}
-          defaultMode:  420
-          items:
-            - key: token
-              path: auth.json
-      {{- end}}
-      {{- if (ne (get .Values.secrets "FIREHOSE_DLQ_GCS_CREDENTIAL_NAME" ) "") }}
-      {{ $DLQ_GCS_CREDENTIALS := pick .Values.secrets "FIREHOSE_DLQ_GCS_CREDENTIAL_NAME" }}
-      - name: {{ get $DLQ_GCS_CREDENTIALS "FIREHOSE_DLQ_GCS_CREDENTIAL_NAME" }}
-        secret:
-          secretName: {{ get $DLQ_GCS_CREDENTIALS "FIREHOSE_DLQ_GCS_CREDENTIAL_NAME" }}
-          defaultMode:  420
-          items:
-            - key: token
-              path: auth.json
-      {{- end}}
-      {{- if (ne (get .Values.secrets "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_NAME" ) "") }}
-      {{ $SINK_BIGQUERY_CREDENTIALS := pick .Values.secrets "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_NAME" }}
-      - name: {{ get $SINK_BIGQUERY_CREDENTIALS "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_NAME" }}
-        secret:
-          secretName: {{ get $SINK_BIGQUERY_CREDENTIALS "FIREHOSE_SINK_BIGQUERY_CREDENTIAL_NAME" }}
+          secretName: {{ $mountSecret.name }}
           defaultMode:  420
           items:
             - key: token

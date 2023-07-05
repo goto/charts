@@ -83,4 +83,6 @@ telegraf:
       cpu: 50m
       memory: 64Mi
 
-secrets: {}
+envSecrets: {}
+mountSecrets: []
+
