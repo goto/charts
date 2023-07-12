@@ -35,8 +35,10 @@ spec:
         - mountPath: /work-dir
           name: workdir
         {{- end }}
+        {{- if (gt (len .Values.mountSecrets) 0 ) }}
         - mountPath: /etc/secret/{{ include "firehose.fullname" . }}-mount-secrets
           name: {{ include "firehose.fullname" . }}-mount-secrets
+        {{- end }}
         {{- end }}
         resources:
           {{- toYaml .Values.firehose.resources | nindent 12 }}
@@ -92,6 +94,7 @@ spec:
       - emptyDir: {}
         name: workdir
       {{- end }}
+      {{- if (gt (len .Values.mountSecrets) 0 ) }}
       - name: {{ include "firehose.fullname" . }}-mount-secrets
         secret:
           secretName: {{ include "firehose.fullname" . }}-mount-secrets
@@ -101,6 +104,7 @@ spec:
             - key: {{$mountSecret.key}}
               path: {{$mountSecret.path}}
           {{- end}}
+      {{- end}}
       {{- end}}
 
       {{- if (gt (len .Values.tolerations) 0) }}
