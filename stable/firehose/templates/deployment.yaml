@@ -96,8 +96,8 @@ spec:
         secret:
           secretName: {{ include "firehose.fullname" . }}-mount-secrets
           defaultMode:  420
-          {{- range $_, $mountSecret := .Values.mountSecrets}}
           items:
+          {{- range $_, $mountSecret := .Values.mountSecrets}}
             - key: {{$mountSecret.key}}
               path: {{$mountSecret.path}}
           {{- end}}
