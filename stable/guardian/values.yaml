@@ -59,6 +59,22 @@ app:
           - job
           - run
           - appeal_expiration_revocation
+      - name: "inactive-user-revocation"
+        schedule: "0 7 * * *"
+        restartPolicy: Never
+        command: []
+        args:
+          - job
+          - run
+          - revoke_grants_by_user_criteria
+      - name: "grant-dormancy-check"
+        schedule: "0 8 * * *"
+        restartPolicy: Never
+        command: []
+        args:
+          - job
+          - run
+          - grant_dormancy_check
 
   ingress:
     enabled: true
@@ -85,6 +101,8 @@ app:
     JOBS_REVOKE_EXPIRED_ACCESS_INTERVAL: "*/20 * * * *"
     JOBS_EXPIRING_ACCESS_NOTIFICATION_ENABLED: false
     JOBS_EXPIRING_ACCESS_NOTIFICATION_INTERVAL: "0 9 * * *"
+    JOBS_REVOKE_GRANTS_BY_USER_CRITERIA_CONFIG_DRY_RUN: true
+    JOBS_GRANT_DORMANCY_CHECK_CONFIG_DRY_RUN: true
 
 
   secretConfig:
