@@ -43,22 +43,22 @@ app:
           - job
           - run
           - fetch_resources
-      - name: "appeal-expiration-reminder"
+      - name: "expiring-grant-notification"
         schedule: "0 9 * * *"
         restartPolicy: Never
         command: []
         args:
           - job
           - run
-          - appeal_expiration_reminder
-      - name: "appeal-expiration-revocation"
+          - expiring_grant_notification
+      - name: "revoke-expired-grants"
         schedule: "*/20 * * * *"
         restartPolicy: Never
         command: []
         args:
           - job
           - run
-          - appeal_expiration_revocation
+          - revoke_expired_grants
       - name: "inactive-user-revocation"
         schedule: "0 7 * * *"
         restartPolicy: Never
