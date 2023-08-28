@@ -36,8 +36,8 @@ spec:
           name: workdir
         {{- end }}
         {{- if (gt (len .Values.mountSecrets) 0 ) }}
-        - mountPath: /etc/secret/{{ include "firehose.fullname" . }}-mount-secrets
-          name: {{ include "firehose.fullname" . }}-mount-secrets
+        - mountPath: /etc/secret/{{ include "firehose.fullname" . }}-m-secret
+          name: {{ include "firehose.fullname" . }}-m-secret
         {{- end }}
         {{- end }}
         resources:
@@ -46,7 +46,7 @@ spec:
           - configMapRef:
               name: {{ include "firehose.fullname" . }}-config
           - secretRef:
-              name: {{ include "firehose.fullname" . }}-secrets
+              name: {{ include "firehose.fullname" . }}-secret
         env:
         - name: POD_NAME
           valueFrom:
@@ -95,9 +95,9 @@ spec:
         name: workdir
       {{- end }}
       {{- if (gt (len .Values.mountSecrets) 0 ) }}
-      - name: {{ include "firehose.fullname" . }}-mount-secrets
+      - name: {{ include "firehose.fullname" . }}-m-secret
         secret:
-          secretName: {{ include "firehose.fullname" . }}-mount-secrets
+          secretName: {{ include "firehose.fullname" . }}-m-secret
           defaultMode:  420
           items:
           {{- range $_, $mountSecret := .Values.mountSecrets}}
