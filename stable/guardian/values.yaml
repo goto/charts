@@ -59,7 +59,7 @@ app:
           - job
           - run
           - revoke_expired_grants
-      - name: "inactive-user-revocation"
+      - name: "inactive-revocation"
         schedule: "0 7 * * *"
         restartPolicy: Never
         command: []
@@ -67,7 +67,7 @@ app:
           - job
           - run
           - revoke_grants_by_user_criteria
-      - name: "grant-dormancy-check"
+      - name: "dormancy-check"
         schedule: "0 8 * * *"
         restartPolicy: Never
         command: []
