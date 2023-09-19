@@ -155,7 +155,7 @@ spec:
         {{- end }}
       volumes:
         {{- range $volume := .Values.volumes }}
-        - {{- toYaml $volume | nindent 10}}
+        - {{- toYaml $volume | nindent 10 }}
         {{- end }}
         {{- if .Values.telegraf.enabled }}
         - name: telegraf-conf
