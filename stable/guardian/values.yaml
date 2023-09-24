@@ -43,22 +43,38 @@ app:
           - job
           - run
           - fetch_resources
-      - name: "appeal-expiration-reminder"
+      - name: "expiring-grant-notification"
         schedule: "0 9 * * *"
         restartPolicy: Never
         command: []
         args:
           - job
           - run
-          - appeal_expiration_reminder
-      - name: "appeal-expiration-revocation"
+          - expiring_grant_notification
+      - name: "revoke-expired-grants"
         schedule: "*/20 * * * *"
         restartPolicy: Never
         command: []
         args:
           - job
           - run
-          - appeal_expiration_revocation
+          - revoke_expired_grants
+      - name: "inactive-revocation"
+        schedule: "0 7 * * *"
+        restartPolicy: Never
+        command: []
+        args:
+          - job
+          - run
+          - revoke_grants_by_user_criteria
+      - name: "dormancy-check"
+        schedule: "0 8 * * *"
+        restartPolicy: Never
+        command: []
+        args:
+          - job
+          - run
+          - grant_dormancy_check
 
   ingress:
     enabled: true
@@ -85,6 +101,8 @@ app:
     JOBS_REVOKE_EXPIRED_ACCESS_INTERVAL: "*/20 * * * *"
     JOBS_EXPIRING_ACCESS_NOTIFICATION_ENABLED: false
     JOBS_EXPIRING_ACCESS_NOTIFICATION_INTERVAL: "0 9 * * *"
+    JOBS_REVOKE_GRANTS_BY_USER_CRITERIA_CONFIG: '{"dry_run":true}'
+    JOBS_GRANT_DORMANCY_CHECK_CONFIG: '{"dry_run":true}'
 
 
   secretConfig:
