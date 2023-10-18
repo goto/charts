@@ -56,7 +56,7 @@ init-firehose:
   args: [wget -O /work-dir/protos.jar http://proto_jar_url.jar]
 
 telegraf:
-  enabled: true
+  enabled: false
   image:
     repository: telegraf
     pullPolicy: IfNotPresent
