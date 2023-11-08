@@ -79,11 +79,11 @@ telegraf:
         # authorization: Bearer <token>
   resources:
     limits:
-      cpu: 200m
-      memory: 100Mi
-    requests:
       cpu: 600m
       memory: 200Mi
+    requests:
+      cpu: 200m
+      memory: 100Mi
 
 envSecrets: {}
 mountSecrets: []
