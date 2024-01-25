@@ -101,6 +101,7 @@ service:
 
 ingress:
   enabled: false
+  className: ""
   annotations:
     kubernetes.io/ingress.class: contour
     projectcontour.io/response-timeout: infinity
@@ -114,6 +115,20 @@ ingress:
               name: optimus
               port:
                 number: 80
+  additionalIngress:
+  - name: grpc
+    className: ""
+    annotations: {}
+    hosts:
+      - host: optimus-grpc.example.com
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: optimus
+                port:
+                  number: 9101
 
 telegraf:
   enabled: false
