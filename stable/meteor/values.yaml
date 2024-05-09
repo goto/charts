@@ -71,6 +71,7 @@ serviceAccount:
   name: ""
   tokenProjection:
     enabled: false
-    mountPath: "/var/run/secrets/tokens"
+    mountPath: "/var/run/secrets"
+    subPath: "token"
     expirationSeconds: 600
     audience: ""

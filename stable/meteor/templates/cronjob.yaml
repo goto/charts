@@ -22,7 +22,7 @@ spec:
 {{- end }}
         spec:
           {{- if .Values.serviceAccount.name }}
-          serviceAccountName: {{ .Values.serviceAccountName }}
+          serviceAccountName: {{ .Values.serviceAccount.name }}
           {{- end }}
           containers:
           - name: "{{ include "meteor.name" . }}"
@@ -46,9 +46,9 @@ spec:
               - name: {{ $v }}
                 mountPath: {{ printf "%s/%s" "/etc/secret" $v }}
               {{- end }}
-              {{- if .Values.serviceAccount.volumeProjection.enabled }}
-              - name: {{ .Values.serviceAccount.volumeProjection.name }}
-                mountPath: {{ .Values.serviceAccount.volumeProjection.mountPath }}
+              {{- if .Values.serviceAccount.tokenProjection.enabled }}
+              - name: {{ .Values.serviceAccount.name }}
+                mountPath: {{ .Values.serviceAccount.tokenProjection.mountPath }}
               {{- end}}
             envFrom:
               - configMapRef:
@@ -161,12 +161,12 @@ spec:
               configMap:
                 name: {{ include "meteor.name" . }}-otelcollector
           {{- end }}
-          {{- if .Values.serviceAccount.volumeProjection.enabled }}
-              - name: {{ .Values.serviceAccount.volumeProjection.name }}
-                projected:
-                  sources:
-                    - serviceAccountToken:
-                        path: {{ .Values.serviceAccount.volumeProjection.name }}
-                        expirtationSeconds: {{ .Values.serviceAccount.volumeProjection.expirationSeconds }}
-                        audience: {{ .Values.serviceAccount.volumeProjection.audience }}
+          {{- if .Values.serviceAccount.tokenProjection.enabled }}
+            - name: {{ .Values.serviceAccount.name }}
+              projected:
+                sources:
+                  - serviceAccountToken:
+                      path: {{ .Values.serviceAccount.tokenProjection.subPath }}
+                      expirtationSeconds: {{ .Values.serviceAccount.tokenProjection.expirationSeconds }}
+                      audience: {{ .Values.serviceAccount.tokenProjection.audience }}
           {{- end}}
