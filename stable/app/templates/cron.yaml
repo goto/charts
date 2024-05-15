@@ -103,9 +103,7 @@ spec:
             volumeMounts:
               - name: otelcollector-conf
                 mountPath: /etc/otelcollector/
-          {{- end }}
-          {{- if .Values.otelcollector.enabled }}
-          shareProcessNamespace: true
+            shareProcessNamespace: true
           {{- end}}
           restartPolicy: {{ $job.restartPolicy }}
           {{- if $job.volumes }}
