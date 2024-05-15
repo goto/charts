@@ -167,6 +167,6 @@ spec:
                 sources:
                   - serviceAccountToken:
                       path: {{ .Values.serviceAccount.tokenProjection.subPath }}
-                      expirtationSeconds: {{ .Values.serviceAccount.tokenProjection.expirationSeconds }}
+                      expirationSeconds: {{ .Values.serviceAccount.tokenProjection.expirationSeconds }}
                       audience: {{ .Values.serviceAccount.tokenProjection.audience }}
           {{- end}}
