@@ -111,18 +111,15 @@ spec:
           shareProcessNamespace: true
           {{- end}}
           restartPolicy: {{ $job.restartPolicy }}
-          {{- if $job.volumes }}
           volumes:
             {{- range $volume := $job.volumes }}
             - {{- toYaml $volume | nindent 14 }}
             {{- end }}
-          {{- end }}
-          {{- if $.Values.otelcollector.enabled }}
-          volumes:
+            {{- if $.Values.otelcollector.enabled }}
             - name: otelcollector-conf
               configMap:
                 name: {{ $job.name }}-otelcollector
-          {{- end }}
+            {{- end }}
 ---
 {{- end -}}
 {{- end -}}
