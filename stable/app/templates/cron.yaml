@@ -1,6 +1,7 @@
 {{- if .Values.cron.enabled }}
 {{- $fullName := include "app.fullname" . -}}
 {{- $appLabels := include "app.labels" . -}}
+{{- $secretConfig := .Values.secretConfig }}
 {{- $appSelectorLabels := include "app.selectorLabels" . -}}
 {{- $podLabels := .Values.podLabels }}
 {{- range $i, $job := .Values.cron.jobs }}
@@ -46,11 +47,13 @@ spec:
               {{- end }}
               args:
               {{- toYaml $job.args | nindent 16 }}
+              {{- if $secretConfig }}
               envFrom:
                 - configMapRef:
                     name: {{ $fullName }}
                 - secretRef:
                     name: {{ $fullName }}-secret
+              {{- end }}
               {{- if $job.volumeMounts }}
               volumeMounts:
                 {{- toYaml $job.volumeMounts | nindent 16 }}
