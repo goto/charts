@@ -1,0 +1,60 @@
+image:
+  repository: asia.gcr.io/systems-0001
+  bucketName: litmus-alerting
+  tag: 
+  pullPolicy:
+cron:
+  enabled: true
+  jobs: 
+    - name: cronJob1
+      schedule: "0 0 * * *"
+      restartPolicy: Never
+      command:
+        - /app/litmus-alerting
+        - alert
+        - expire
+config: {}
+resources: 
+
+otelcollector:
+  enabled: true
+  image: otel/opentelemetry-collector-contrib:0.91.0
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: "0.0.0.0:4317"
+    processors:
+      resourcedetection:
+        detectors: [env, system]
+    extensions:
+      health_check: {}
+      pprof:
+        endpoint: 0.0.0.0:1888
+      zpages:
+        endpoint: 0.0.0.0:55679
+    exporters:
+      prometheusremotewrite:
+        endpoint: "http://radar-router.a000145.svc.cluster.local/gojek/api/v1/push"
+        external_labels:
+          team: data-catalog
+          cluster: ${ClusterName}
+          service: "${ServiceName}"
+          environment: "${DeploymentEnv}"
+        resource_to_telemetry_conversion:
+          enabled: true
+      logging:
+
+    service:
+      extensions: [health_check, zpages, pprof]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [resourcedetection]
+          exporters: [logging]
+
+        metrics:
+          receivers: [otlp]
+          processors: [resourcedetection]
+          exporters: [prometheusremotewrite]
