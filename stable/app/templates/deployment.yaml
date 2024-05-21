@@ -1,4 +1,4 @@
-{{- if not .Values.cron.enabled }}
+{{- if not .Values.container.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
