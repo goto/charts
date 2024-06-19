@@ -32,6 +32,9 @@ spec:
           {{- end }}
           containers:
             - name: {{ $job.name }}
+              {{- if $job.serviceAccountName }}
+              serviceAccountName: "{{ $job.serviceAccountName }}"
+              {{- end }}
               image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
               imagePullPolicy: {{ $.Values.image.pullPolicy }}
               command:
