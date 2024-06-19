@@ -1,0 +1,6 @@
+dependencies:
+- name: app
+  repository: https://goto.github.io/charts/
+  version: 0.6.7
+digest: sha256:866fbe2b737f3d50b092397965fb0fb229d5c49a326da6b20cf3b197ae05b6c7
+generated: "2024-06-19T17:35:12.307244+07:00"
