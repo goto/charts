@@ -110,6 +110,13 @@ spec:
           - containerPort: 55679
             name: zpages
             protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: "{{ include "app.fullname" . }}"
+         {{- if .Values.secretConfig }}
+            - secretRef:
+                name: "{{ template "app.fullname" . }}-secret"
+         {{- end }}
           env:
             - name: K8S_NODE_NAME
               valueFrom:
