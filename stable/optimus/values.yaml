@@ -69,7 +69,7 @@ configYaml: |-
     jaeger_addr: "http://jaeger-collector:14268/api/traces"
   plugin:
     artifacts:
-      - /etc/optimus-plugins/bq2bq.yaml
+      - /etc/optimus-plugins
 
 config:
   OPTIMUS_TELEMETRY_JAEGER_ADDR: http://jaeger-collector.optimus:14268/api/traces
