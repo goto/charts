@@ -80,7 +80,7 @@ pluginYaml:
     description: BigQuery to BigQuery transformation task
     plugintype: task
     pluginversion: 0.4.2
-    image: 'artifactory-gojek.golabs.io:6555/gotocompany/optimus-task-bq2bq-executor:0.4.2'
+    image: 'docker.io/gotocompany/optimus-task-bq2bq-executor:0.4.2'
     entrypoint:
       script: "python3 /opt/bumblebee/main.py"
 
