@@ -34,7 +34,6 @@ spec:
               - |
                 meteor run /opt/recipes;
                 METEOR_EXIT_CODE=$?
-                echo "Meteor command exited with code METEOR_EXIT_CODE"
 
                 if [ $METEOR_EXIT_CODE -eq 0 ]; then
                   {{- if .Values.cleanupStaleAssets.enabled }}
