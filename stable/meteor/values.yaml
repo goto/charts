@@ -38,6 +38,16 @@ resources:
 #         foo: "bar"
 #     sinks:
 #       - name: console
+cleanupStaleAssets:
+  enabled: false
+  image: curlimages/curl:8.9.1
+  endpoint:
+  headers:
+    Content-Type: application/json
+  payload:
+    dry_run: true
+    query_expr:
+
 telegraf:
   enabled: false
   image: telegraf:1.19.3-alpine
