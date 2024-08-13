@@ -41,7 +41,7 @@ resources:
 cleanupStaleAssets:
   enabled: false
   image: curlimages/curl:8.9.1
-  endpoint:
+  url:
   headers:
     Content-Type: application/json
   payload:

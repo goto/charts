@@ -38,7 +38,7 @@ spec:
 
                 if [ $METEOR_EXIT_CODE -eq 0 ]; then
                   {{- if .Values.cleanupStaleAssets.enabled }}
-                    curl -X POST {{ .Values.cleanupStaleAssets.endpoint }} \
+                    curl -X POST {{ .Values.cleanupStaleAssets.url }} \
                     -H "Content-Type: application/json" \
                     {{- range $key, $value := .Values.cleanupStaleAssets.headers }}
                       -H "{{ $key }}: {{ $value }}" \
