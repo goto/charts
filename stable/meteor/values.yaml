@@ -38,15 +38,10 @@ resources:
 #         foo: "bar"
 #     sinks:
 #       - name: console
-cleanupStaleAssets:
+cleanup:
   enabled: false
   image: curlimages/curl:8.9.1
-  url:
-  headers:
-    Content-Type: application/json
-  payload:
-    dry_run: true
-    query_expr:
+  cmd:
 
 telegraf:
   enabled: false
