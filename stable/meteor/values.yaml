@@ -40,8 +40,8 @@ resources:
 #       - name: console
 cleanup:
   enabled: false
-  image: curlimages/curl:8.9.1
   cmd:
+    echo "dummy command that will be executed if enabled is true"
 
 telegraf:
   enabled: false
