@@ -36,8 +36,8 @@ spec:
                   METEOR_EXIT_CODE=$?
 
                   if [ $METEOR_EXIT_CODE -eq 0 ]; then
-                    {{- if .Values.cleanup.enabled }}
-                    {{ .Values.cleanup.cmd }}
+                    {{- if .Values.postCmd.enabled }}
+                    {{ .Values.postCmd.cmd }}
                     {{- end }}
                   fi
             {{- if .Values.telegraf.enabled }}

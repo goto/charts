@@ -38,7 +38,7 @@ resources:
 #         foo: "bar"
 #     sinks:
 #       - name: console
-cleanup:
+postCmd:
   enabled: false
   cmd:
     echo "dummy command that will be executed if enabled is true"
