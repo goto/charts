@@ -4,9 +4,9 @@ metadata:
   name: "{{ include "meteor.name" . }}"
   namespace: {{ include "meteor.namespace" . }}
   labels:
-{{- if .Values.labels }}
-{{ toYaml .Values.labels | indent 4 }}
-{{- end }}
+    {{- if .Values.labels }}
+    {{ toYaml .Values.labels | indent 4 }}
+    {{- end }}
 spec:
   schedule: {{ .Values.schedule | quote }}
   concurrencyPolicy: {{ .Values.concurrencyPolicy }}
@@ -17,9 +17,9 @@ spec:
       template:
         metadata:
           labels:
-{{- if .Values.labels }}
-{{ toYaml .Values.labels | indent 12 }}
-{{- end }}
+            {{- if .Values.labels }}
+            {{ toYaml .Values.labels | indent 12 }}
+            {{- end }}
         spec:
           {{- if .Values.serviceAccount.name }}
           serviceAccountName: {{ .Values.serviceAccount.name }}
@@ -37,35 +37,35 @@ spec:
 
                   if [ $METEOR_EXIT_CODE -eq 0 ]; then
                     {{- if .Values.postCmd.enabled }}
-                    {{ .Values.postCmd.cmd }}
+                    {{ .Values.postCmd.cmd | indent 20 }}
                     {{- end }}
                   fi
-            {{- if .Values.telegraf.enabled }}
+                  {{- if .Values.telegraf.enabled }}
                   pkill -SIGTERM telegraf
-            {{- end }}
-            {{- if .Values.otelcollector.enabled }}
+                  {{- end }}
+                  {{- if .Values.otelcollector.enabled }}
                   pkill -SIGTERM otelcol-contrib
-            {{- end }}
+                  {{- end }}
               volumeMounts:
                 - name: "{{ include "meteor.name" . }}-volume"
                   mountPath: /opt/recipes
-              {{- range $k, $v := .Values.ssl_secrets }}
+                {{- range $k, $v := .Values.ssl_secrets }}
                 - name: {{ $v }}
                   mountPath: {{ printf "%s/%s" "/etc/secret" $v }}
-              {{- end }}
-              {{- if .Values.serviceAccount.tokenProjection.enabled }}
+                {{- end }}
+                {{- if .Values.serviceAccount.tokenProjection.enabled }}
                 - name: {{ .Values.serviceAccount.name }}
                   mountPath: {{ .Values.serviceAccount.tokenProjection.mountPath }}
-              {{- end}}
+                {{- end }}
               envFrom:
                 - configMapRef:
                     name: "{{ include "meteor.name" . }}-variables-configmap"
-            {{- if .Values.secretConfig }}
+                {{- if .Values.secretConfig }}
                 - secretRef:
                     name: "{{ include "meteor.name" . }}-secret"
-            {{- end }}
+                {{- end }}
               resources:
-              {{- toYaml .Values.resources | nindent 14 }}
+                {{- toYaml .Values.resources | nindent 14 }}
           {{- if .Values.otelcollector.enabled }}
             - name: otel-collector-sidecar
               image: {{ .Values.otelcollector.image }}
@@ -122,13 +122,13 @@ spec:
             - name: telegraf-sidecar
               image: {{ .Values.telegraf.image }}
               args:
-              {{- range .Values.telegraf.args }}
+                {{- range .Values.telegraf.args }}
                 - {{ . }}
-              {{- end }}
+                {{- end }}
               command:
-              {{- range .Values.telegraf.command }}
+                {{- range .Values.telegraf.command }}
                 - {{ . }}
-              {{- end }}
+                {{- end }}
               imagePullPolicy: IfNotPresent
               ports:
                 - containerPort: {{ .Values.telegraf.containerPort }}
@@ -140,24 +140,24 @@ spec:
           {{- end }}
           {{- if or .Values.telegraf.enabled .Values.otelcollector.enabled }}
           shareProcessNamespace: true
-          {{- end}}
+          {{- end }}
           restartPolicy: Never
           volumes:
             - name: "{{ include "meteor.name" . }}-volume"
               configMap:
                 name: "{{ include "meteor.name" . }}-recipe-configmap"
                 items:
-                {{- range $k, $v := .Values.recipes }}
+                  {{- range $k, $v := .Values.recipes }}
                   - key: {{ $k }}
                     path: {{ $k }}
-                {{- end }}
-            {{- range $k, $v := .Values.ssl_secrets }}
+                  {{- end }}
+                {{- range $k, $v := .Values.ssl_secrets }}
             - name: {{ $v }}
               secret:
                 defaultMode: 420
                 optional: true
                 secretName: {{ $v }}
-            {{- end }}
+                {{- end }}
           {{- if .Values.telegraf.enabled }}
             - name: telegraf-conf
               configMap:
@@ -176,4 +176,4 @@ spec:
                       path: {{ .Values.serviceAccount.tokenProjection.subPath }}
                       expirationSeconds: {{ .Values.serviceAccount.tokenProjection.expirationSeconds }}
                       audience: {{ .Values.serviceAccount.tokenProjection.audience }}
-          {{- end}}
+          {{- end }}
