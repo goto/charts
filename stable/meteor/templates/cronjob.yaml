@@ -37,7 +37,7 @@ spec:
                   METEOR_EXIT_CODE=$?
 
                   if [ $METEOR_EXIT_CODE -eq 0 ]; then
-                    {{ .Values.postCmd.cmd | indent 20 }}
+                    {{ .Values.postCmd.cmd | nindent 20 }}
                   fi
                   {{- end }}
                   {{- if .Values.telegraf.enabled }}
