@@ -33,13 +33,13 @@ spec:
                 - -c
                 - |
                   meteor run /opt/recipes;
+                  {{- if .Values.postCmd.enabled }}
                   METEOR_EXIT_CODE=$?
 
                   if [ $METEOR_EXIT_CODE -eq 0 ]; then
-                    {{- if .Values.postCmd.enabled }}
                     {{ .Values.postCmd.cmd | indent 20 }}
-                    {{- end }}
                   fi
+                  {{- end }}
                   {{- if .Values.telegraf.enabled }}
                   pkill -SIGTERM telegraf
                   {{- end }}
@@ -177,3 +177,17 @@ spec:
                       expirationSeconds: {{ .Values.serviceAccount.tokenProjection.expirationSeconds }}
                       audience: {{ .Values.serviceAccount.tokenProjection.audience }}
           {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helm-repo-service
+spec:
+  selector:
+    app: helm-repo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+  type: NodePort
