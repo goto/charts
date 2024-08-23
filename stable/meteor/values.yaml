@@ -40,8 +40,9 @@ resources:
 #       - name: console
 postCmd:
   enabled: false
-  cmd:
-    echo "dummy command that will be executed if enabled is true"
+  cmd: ""
+  #  cmd: |
+  #    echo "dummy command that will be executed if enabled is true"
 
 telegraf:
   enabled: false
