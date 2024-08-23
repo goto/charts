@@ -41,8 +41,6 @@ resources:
 postCmd:
   enabled: false
   cmd: ""
-  #  cmd: |
-  #    echo "dummy command that will be executed if enabled is true"
 
 telegraf:
   enabled: false
