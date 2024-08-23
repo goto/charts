@@ -177,17 +177,3 @@ spec:
                       expirationSeconds: {{ .Values.serviceAccount.tokenProjection.expirationSeconds }}
                       audience: {{ .Values.serviceAccount.tokenProjection.audience }}
           {{- end }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: helm-repo-service
-spec:
-  selector:
-    app: helm-repo
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-      nodePort: 30080
-  type: NodePort
