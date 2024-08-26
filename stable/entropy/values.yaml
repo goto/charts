@@ -53,7 +53,7 @@ app:
 
   secretConfig: {}
 
-workers:
+worker:
   image:
     repository: gotocompany/entropy
     pullPolicy: Always

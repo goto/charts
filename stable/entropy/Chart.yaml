@@ -10,8 +10,8 @@ dependencies:
   repository: "https://goto.github.io/charts/"
   alias: app
   condition: app.enabled
-- name: workers
+- name: worker
   version: "0.5.12"
   repository: "https://goto.github.io/charts/"
-  alias: workers
-  condition: workers.enabled
+  alias: worker
+  condition: worker.enabled
