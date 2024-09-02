@@ -25,5 +25,5 @@ appVersion: "0.3.0"
 
 dependencies:
 - name: app
-  version: "0.6.8"
+  version: "0.6.9"
   repository: "https://goto.github.io/charts/"
