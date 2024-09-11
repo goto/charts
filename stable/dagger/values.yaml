@@ -5,6 +5,7 @@ name: "dagger-test"
 team: "streaming"
 flink_name: "flink-cluster"
 prometheus_url: "http://prometheus:9090"
+storage_protocol: gs
 resources:
   jobmanager:
     cpu: "1"
