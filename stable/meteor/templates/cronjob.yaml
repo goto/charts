@@ -37,7 +37,7 @@ spec:
                 {{- if .Values.postCmd.enabled }}
                 NUM_FAILING=$(echo $OUTPUT | grep -o '^[0-9]* failing' | awk '{print $1}')
                 # if the output does not contains number of failing, then it is failed
-                if [ -z "$NUM_FAILING" ]; then
+                if [ -z $NUM_FAILING ]; then
                   NUM_FAILING=-1
                 fi
                 # run post cmd only if exit code is success and no any failing occurred in meteor job
