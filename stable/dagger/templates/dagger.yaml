@@ -81,9 +81,9 @@ spec:
             - name: PROMETHEUS_URL
               value: {{ .Values.prometheus_url }}
             - name: DAGGER_URN
-              value: {{ .Values.urn}}
+              value: {{ .Values.urn }}
             - name: TEAM_NAME
-              value: {{.Values.team}}
+              value: {{.Values.team }}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           resources:
