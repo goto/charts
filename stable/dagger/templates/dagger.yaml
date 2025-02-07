@@ -23,14 +23,14 @@ spec:
 
     #HA CONFIGS
     state.backend: filesystem
-    state.backend.fs.checkpointdir: {{ .Values.storage_protocol }}://{{ .Values.projectID }}-dagger-checkpoints/flink-checkpoints/{{ .Values.name }}
-    state.savepoints.dir: {{ .Values.storage_protocol }}://{{ .Values.projectID }}-dagger-checkpoints/flink-savepoints/{{ .Values.name }}
+    state.backend.fs.checkpointdir: {{ .Values.dagger_ha_bucket_url }}/checkpoints/{{ .Values.name }}
+    state.savepoints.dir: {{ .Values.dagger_ha_bucket_url }}/savepoints/{{ .Values.name }}
     blob.storage.directory: /tmp/flink-blobs
     jobmanager.web.tmpdir: /tmp/flink-web
     web.upload.dir: /tmp/flink-web/flink-uploads
 
     high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
-    high-availability.storageDir: {{ .Values.storage_protocol }}://{{ .Values.projectID }}-dagger-checkpoints/ha
+    high-availability.storageDir: {{ .Values.dagger_ha_bucket_url }}/ha
 
     metrics.reporters: stsd
     metrics.reporter.stsd.class: com.gojek.de.dagger.metrics.StatsDReporter
