@@ -64,14 +64,18 @@ spec:
       serviceAccount: flink
       containers:
         - name: flink-main-container
+          {{- if eq .Values.csp "gcp" }}
           env:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /var/secrets/google/gcp_key.json
+          {{- end}}
           volumeMounts:
             - mountPath: /etc/hadoop/conf
               name: hadoop-config
+          {{- if eq .Values.csp "gcp" }}
             - mountPath: /var/secrets/google
               name: google-cloud-key
+          {{- end}}
         - name: telegrafd
           image: telegraf:1.18.3-alpine
           imagePullPolicy: IfNotPresent
@@ -105,10 +109,12 @@ spec:
           configMap:
             defaultMode: 420
             name: flink-operator-telegraf-config
+        {{- if eq .Values.csp "gcp" }}
         - name: google-cloud-key
           secret:
             defaultMode: 420
             secretName: flink-operator-gcp
+        {{- end}}
   jobManager:
     resource:
       cpu: {{ .Values.resources.jobmanager.cpu }}
