@@ -64,7 +64,7 @@ spec:
       serviceAccount: flink
       containers:
         - name: flink-main-container
-          {{- if eq .Values.csp "gcp" }}
+          {{- if eq .Values.cloud_provider "gcp" }}
           env:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /var/secrets/google/gcp_key.json
@@ -72,7 +72,7 @@ spec:
           volumeMounts:
             - mountPath: /etc/hadoop/conf
               name: hadoop-config
-          {{- if eq .Values.csp "gcp" }}
+          {{- if eq .Values.cloud_provider "gcp" }}
             - mountPath: /var/secrets/google
               name: google-cloud-key
           {{- end}}
@@ -109,7 +109,7 @@ spec:
           configMap:
             defaultMode: 420
             name: flink-operator-telegraf-config
-        {{- if eq .Values.csp "gcp" }}
+        {{- if eq .Values.cloud_provider "gcp" }}
         - name: google-cloud-key
           secret:
             defaultMode: 420
