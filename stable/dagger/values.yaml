@@ -7,9 +7,6 @@ flink_name: "flink-cluster"
 prometheus_url: "http://prometheus:9090"
 storage_protocol: gs
 cloud_provider: gcp
-dagger_checkpoint_url: gs://g-gojek-id-dagger-checkpoints/checkpoints
-dagger_savepoint_url: gs://g-gojek-id-dagger-checkpoints/savepoints
-dagger_k8s_ha_url: gs://g-gojek-id-dagger-checkpoints/k8s-ha
 resources:
   jobmanager:
     cpu: "1"
