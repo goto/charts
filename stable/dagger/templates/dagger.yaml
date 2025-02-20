@@ -76,6 +76,11 @@ spec:
             - mountPath: /var/secrets/google
               name: google-cloud-key
           {{- end}}
+          {{- if eq .Values.cloud_provider "ali" }}
+          envFrom:
+          - configMapRef:
+              name: dagger-user-credential
+          {{- end}}
         - name: telegrafd
           image: telegraf:1.18.3-alpine
           imagePullPolicy: IfNotPresent
