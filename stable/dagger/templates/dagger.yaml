@@ -69,6 +69,11 @@ spec:
       serviceAccount: flink
       containers:
         - name: flink-main-container
+          {{- if or (eq .Values.cloud_provider "ali") (eq .Values.cloud_provider "tcc") }}
+          envFrom:
+            - configMapRef:
+                name: dagger-user-credential
+          {{- end}}
           {{- if eq .Values.cloud_provider "gcp" }}
           env:
             - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -80,11 +85,6 @@ spec:
           {{- if eq .Values.cloud_provider "gcp" }}
             - mountPath: /var/secrets/google
               name: google-cloud-key
-          {{- end}}
-          {{- if or (eq .Values.cloud_provider "ali") (eq .Values.cloud_provider "tcc") }}
-          envFrom:
-          - configMapRef:
-              name: dagger-user-credential
           {{- end}}
         - name: telegrafd
           image: telegraf:1.18.3-alpine
