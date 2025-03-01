@@ -32,6 +32,11 @@ spec:
     high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
     high-availability.storageDir: {{ .Values.dagger_k8s_ha_url }}
 
+    fs.cosn.credentials.provider: org.apache.hadoop.fs.auth.EnvironmentVariableCredentialProvider
+    fs.cosn.bucket.region: ap-jakarta
+
+    fs.oss.credentials.provider: com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider
+
     metrics.reporters: stsd
     metrics.reporter.stsd.class: com.gojek.de.dagger.metrics.StatsDReporter
     metrics.reporter.stsd.host: localhost
@@ -76,7 +81,7 @@ spec:
             - mountPath: /var/secrets/google
               name: google-cloud-key
           {{- end}}
-          {{- if eq .Values.cloud_provider "ali" }}
+          {{- if or (eq .Values.cloud_provider "ali") (eq .Values.cloud_provider "tcc") }}
           envFrom:
           - configMapRef:
               name: dagger-user-credential
