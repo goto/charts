@@ -94,6 +94,10 @@ autoscaler:
   keda:
     fallback: {}
     triggers: []
-    advanced:
-      horizontalPodAutoscalerConfig: {}
+    scaleUp:
+      policies: []
+      stabilizationWindowSeconds: 0
+    scaleDown:
+      policies: []
+      stabilizationWindowSeconds: 0
 

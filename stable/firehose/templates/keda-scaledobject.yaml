@@ -15,9 +15,23 @@ spec:
     {{- end }}
   advanced:
     horizontalPodAutoscalerConfig:
-      {{- if .Values.autoscaler.keda.advanced.horizontalPodAutoscalerConfig }}
-      {{- toYaml .Values.autoscaler.keda.advanced.horizontalPodAutoscalerConfig | nindent 6 }}
-      {{- end }}
+      behavior:
+        scaleUp:
+          policies:
+            {{- range $policy := .Values.autoscaler.keda.scaleUp.policies }}
+            - type: {{ $policy.type }}
+              value: {{ $policy.value }}
+              periodSeconds: {{ $policy.periodSeconds | default 60 }}
+            {{- end }}
+          stabilizationWindowSeconds: {{ .Values.autoscaler.keda.scaleUp.stabilizationWindowSeconds | default 0 }}
+        scaleDown:
+          policies:
+            {{- range $policy := .Values.autoscaler.keda.scaleDown.policies }}
+            - type: {{ $policy.type }}
+              value: {{ $policy.value }}
+              periodSeconds: {{ $policy.periodSeconds | default 60 }}
+            {{- end }}
+          stabilizationWindowSeconds: {{ .Values.autoscaler.keda.scaleDown.stabilizationWindowSeconds | default 0 }}
       name: {{ include "firehose.fullname" . }}
   {{- if .Values.autoscaler.keda.maxReplicaCount }}
   maxReplicaCount: {{ .Values.autoscaler.keda.maxReplicaCount }}
