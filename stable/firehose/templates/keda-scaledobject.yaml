@@ -14,6 +14,9 @@ spec:
     {{- toYaml .Values.autoscaler.keda.fallback | nindent 4 }}
     {{- end }}
   advanced:
+    {{- if .Values.autoscaler.keda.restoreToOriginalReplicaCount }}
+    restoreToOriginalReplicaCount: {{ .Values.autoscaler.keda.restoreToOriginalReplicaCount }}
+    {{- end }}
     horizontalPodAutoscalerConfig:
       behavior:
         scaleUp:

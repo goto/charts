@@ -100,4 +100,3 @@ autoscaler:
     scaleDown:
       policies: []
       stabilizationWindowSeconds: 0
-
