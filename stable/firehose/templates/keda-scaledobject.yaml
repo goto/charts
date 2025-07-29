@@ -9,10 +9,12 @@ metadata:
   name: {{ include "firehose.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
+  {{- if .Values.autoscaler.keda.fallback.behavior }}
   fallback:
-    {{- if .Values.autoscaler.keda.fallback }}
-    {{- toYaml .Values.autoscaler.keda.fallback | nindent 4 }}
-    {{- end }}
+    behavior: {{ .Values.autoscaler.keda.fallback.behavior }}
+    failureThreshold: {{ .Values.autoscaler.keda.fallback.failureThreshold  }}
+    replicas: {{ .Values.autoscaler.keda.fallback.replicas }}
+  {{- end }}
   advanced:
     {{- if .Values.autoscaler.keda.restoreToOriginalReplicaCount }}
     restoreToOriginalReplicaCount: {{ .Values.autoscaler.keda.restoreToOriginalReplicaCount }}
@@ -59,7 +61,8 @@ spec:
         {{- end }}
       {{- if $trigger.authenticationRef }}
       authenticationRef:
-        name: {{ $trigger.authenticationRef.name | default (include "firehose.fullname" .) }}
+        name: {{ $trigger.authenticationRef.name }}
+        kind: {{ $trigger.authenticationRef.kind | default "ScaledObject" }}
       {{- end }}
     {{- end }}
 {{- end -}}
