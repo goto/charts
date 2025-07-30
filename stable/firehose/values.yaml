@@ -92,6 +92,7 @@ autoscaler:
   enabled: false
   type: keda
   keda:
+    paused: false
     fallback: {}
     triggers: []
     scaleUp:
