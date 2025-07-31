@@ -14,6 +14,7 @@ metadata:
     {{- end }}
     {{- if .Values.autoscaler.keda.paused }}
     autoscaling.keda.sh/paused: "true"
+    autoscaling.keda.sh/paused-replicas: "{{ .Values.autoscaler.keda.paused-replicas }}"
     {{- end }}
 spec:
   {{- if .Values.autoscaler.keda.fallback.behavior }}

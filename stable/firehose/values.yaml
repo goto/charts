@@ -93,6 +93,7 @@ autoscaler:
   type: keda
   keda:
     paused: false
+    paused-replicas: 0
     fallback: {}
     triggers: []
     scaleUp:
