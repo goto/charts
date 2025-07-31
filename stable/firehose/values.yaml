@@ -92,10 +92,9 @@ autoscaler:
   enabled: false
   type: keda
   keda:
-    paused: false
-    paused-replicas: 0
     fallback: {}
     triggers: []
+    annotations: {}
     scaleUp:
       policies: []
       stabilizationWindowSeconds: 0

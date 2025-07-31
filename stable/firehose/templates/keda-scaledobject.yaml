@@ -8,14 +8,12 @@ metadata:
     scaledobject.keda.sh/name: {{ include "firehose.fullname" . }}
   name: {{ include "firehose.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  {{- if len .Values.autoscaler.keda.annotations > 0 }}
   annotations:
     {{- range $key, $value := .Values.autoscaler.keda.annotations }}
     {{ $key }}: {{ $value }}
     {{- end }}
-    {{- if .Values.autoscaler.keda.paused }}
-    autoscaling.keda.sh/paused: "true"
-    autoscaling.keda.sh/paused-replicas: "{{ .Values.autoscaler.keda.paused-replicas }}"
-    {{- end }}
+  {{- end }}
 spec:
   {{- if .Values.autoscaler.keda.fallback.behavior }}
   fallback:
