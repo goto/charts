@@ -29,20 +29,22 @@ spec:
       behavior:
         scaleUp:
           policies:
-            {{- range $policy := .Values.autoscaler.keda.scaleUp.policies }}
+            {{- range $policy := .Values.autoscaler.keda.hpa.scaleUp.policies }}
             - type: {{ $policy.type }}
               value: {{ $policy.value }}
               periodSeconds: {{ $policy.periodSeconds | default 60 }}
             {{- end }}
-          stabilizationWindowSeconds: {{ .Values.autoscaler.keda.scaleUp.stabilizationWindowSeconds | default 0 }}
+          stabilizationWindowSeconds: {{ .Values.autoscaler.keda.hpa.scaleUp.stabilizationWindowSeconds | default 0 }}
+          tolerance: {{ .Values.autoscaler.keda.hpa.scaleUp.tolerance | default 0 }}
         scaleDown:
           policies:
-            {{- range $policy := .Values.autoscaler.keda.scaleDown.policies }}
+            {{- range $policy := .Values.autoscaler.keda.hpa.scaleDown.policies }}
             - type: {{ $policy.type }}
               value: {{ $policy.value }}
               periodSeconds: {{ $policy.periodSeconds | default 60 }}
             {{- end }}
-          stabilizationWindowSeconds: {{ .Values.autoscaler.keda.scaleDown.stabilizationWindowSeconds | default 0 }}
+          stabilizationWindowSeconds: {{ .Values.autoscaler.keda.hpa.scaleDown.stabilizationWindowSeconds | default 0 }}
+          tolerance: {{ .Values.autoscaler.keda.hpa.scaleDown.tolerance | default 0 }}
       name: {{ include "firehose.fullname" . }}
   {{- if .Values.autoscaler.keda.maxReplicaCount }}
   maxReplicaCount: {{ .Values.autoscaler.keda.maxReplicaCount }}
@@ -65,7 +67,7 @@ spec:
         {{- range $key, $value := $trigger.metadata }}
         {{ $key }}: {{ $value }}
         {{- end }}
-      {{- if $trigger.authenticationRef }}
+      {{- if $trigger.authenticationRef.name != "" }}
       authenticationRef:
         name: {{ $trigger.authenticationRef.name }}
         kind: {{ $trigger.authenticationRef.kind | default "ScaledObject" }}
