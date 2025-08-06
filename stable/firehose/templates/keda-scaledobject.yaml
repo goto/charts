@@ -34,7 +34,7 @@ spec:
               value: {{ $policy.value }}
               periodSeconds: {{ $policy.periodSeconds | default 60 }}
             {{- end }}
-          stabilizationWindowSeconds: {{ .Values.autoscaler.keda.hpa.scaleUp.stabilizationWindowSeconds | default 0 }}
+          stabilizationWindowSeconds: {{ .Values.autoscaler.keda.hpa.scaleUp.stabilizationWindowSeconds | default 60 }}
           tolerance: {{ .Values.autoscaler.keda.hpa.scaleUp.tolerance | default 0 }}
         scaleDown:
           policies:
@@ -43,7 +43,7 @@ spec:
               value: {{ $policy.value }}
               periodSeconds: {{ $policy.periodSeconds | default 60 }}
             {{- end }}
-          stabilizationWindowSeconds: {{ .Values.autoscaler.keda.hpa.scaleDown.stabilizationWindowSeconds | default 0 }}
+          stabilizationWindowSeconds: {{ .Values.autoscaler.keda.hpa.scaleDown.stabilizationWindowSeconds | default 300 }}
           tolerance: {{ .Values.autoscaler.keda.hpa.scaleDown.tolerance | default 0 }}
       name: {{ include "firehose.fullname" . }}
   {{- if .Values.autoscaler.keda.maxReplicaCount }}
