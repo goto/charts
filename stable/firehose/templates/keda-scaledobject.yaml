@@ -1,4 +1,4 @@
-{{- if and .Values.autoscaler.enabled eq .Values.autoscaler.type "keda"}}
+{{- if and .Values.autoscaler.enabled (eq .Values.autoscaler.type "keda") }}
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
