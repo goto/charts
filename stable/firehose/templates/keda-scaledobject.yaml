@@ -65,7 +65,7 @@ spec:
     - type: {{ $trigger.type }}
       metadata:
         {{- range $key, $value := $trigger.metadata }}
-        {{ $key }}: {{ $value }}
+        {{ $key }}: "{{ $value }}"
         {{- end }}
       {{- if not (eq $trigger.authenticationRef.name "") }}
       authenticationRef:
