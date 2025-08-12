@@ -68,10 +68,10 @@ spec:
         {{ $key }}: "{{ $value }}"
         {{- end }}
       {{- if $trigger.authenticationRef }}
-      {{- if not (eq $trigger.authenticationRef.name "") }}
+      {{- if $trigger.authenticationRef.name }}
       authenticationRef:
         name: {{ $trigger.authenticationRef.name }}
-        {{- if not (eq $trigger.authenticationRef.kind "")}}
+        {{- if $trigger.authenticationRef.kind }}
         kind: {{ $trigger.authenticationRef.kind }}
         {{- end }}
       {{- end }}
