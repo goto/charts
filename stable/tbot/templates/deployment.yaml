@@ -10,7 +10,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "app.selezctorLabels" . | nindent 6 }}
+      {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -73,6 +73,8 @@ spec:
           args:
             {{- toYaml .Values.container.args | nindent 12 }}
           volumeMounts:
+            - name: {{ include "app.fullname" . }}
+              mountPath: /{{ include "app.fullname" . }}
             {{- toYaml .Values.container.volumeMounts | nindent 12 }}
           envFrom:
             - configMapRef:
@@ -222,6 +224,10 @@ spec:
             name: {{ .Values.iap.serviceAccountSecret }}
         {{- end }}
       volumes:
+        - name: {{ include "app.fullname" . }}
+          configMap:
+            name: {{ template "app.fullname" . }}
+          emptyDir: {}
         {{- range $volume := .Values.volumes }}
         - {{- toYaml $volume | nindent 10 }}
         {{- end }}

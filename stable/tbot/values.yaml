@@ -1,14 +1,9 @@
-# Default values for ..
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: public.ecr.aws/gravitational/tbot-distroless
+  tag: 16.5.13
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -16,7 +11,7 @@ fullnameOverride: ""
 
 serviceAccount:
   create: true
-  name: ""
+  name: "tbot-sa"
   role:
     enabled: true
     name: tbot-secrets-admins
@@ -25,54 +20,47 @@ podAnnotations: {}
 podLabels: {}
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
+initContainers: {}
 
-# Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
+container:
+  enabled: true
+  command: []
+  args: []
+  ports:
+    - name: tcp
+      containerPort: 8080
+      protocol: TCP
+  livenessProbe:
+    httpGet:
+      path: /
+      port: tcp
+  readinessProbe:
+    httpGet:
+      path: /
+      port: tcp
+  volumeMounts:
+  - name: join-sa-token
+    mountPath: /var/run/secrets/tokens
 
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
+
+volumes:
+  - name: join-sa-token
+    projected:
+      sources:
+        - serviceAccountToken:
+            path: join-sa-token
+            expirationSeconds: 600
+            audience: auth-server
 
 config: {}
 
-secretConfig:
-  {}
-  # -- Example: database connection details can go under secret config
-  # DB_HOST: localhost
-  # DB_NAME: app
-  # DB_USER: ""
-  # DB_PASSWORD: ""
-  # DB_PORT: 5432
+secretConfig: {}
 
 telegraf:
   enabled: false
   image: telegraf:1.19.3-alpine
-  config: ~ # telegraf config
+  config: ~
   containerPort: 8125
   protocol: UDP
   args:
