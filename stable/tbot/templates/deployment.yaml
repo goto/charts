@@ -227,7 +227,6 @@ spec:
         - name: {{ include "app.fullname" . }}
           configMap:
             name: {{ template "app.fullname" . }}
-          emptyDir: {}
         {{- range $volume := .Values.volumes }}
         - {{- toYaml $volume | nindent 10 }}
         {{- end }}
