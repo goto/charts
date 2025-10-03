@@ -52,20 +52,24 @@ spec:
               containerPort: {{ $port.containerPort }}
               protocol: {{ $port.protocol }}
             {{- end }}
+          {{- if .Values.container.healthcheck.enabled }}
           livenessProbe:
-            {{- if .Values.container.livenessProbe.exec }}
+            {{- if .Values.container.healthcheck.livenessProbe.exec }}
             exec:
-              {{- toYaml .Values.container.livenessProbe.exec | nindent 14 }}
+              {{- toYaml .Values.container.healthcheck.livenessProbe.exec | nindent 14 }}
             {{- else }}
-            {{- toYaml .Values.container.livenessProbe | nindent 12 }}
+            {{- toYaml .Values.container.healthcheck.livenessProbe | nindent 12 }}
             {{- end }}
           readinessProbe:
-            {{- if .Values.container.readinessProbe.exec }}
+            {{- if .Values.container.healthcheck.readinessProbe.exec }}
             exec:
-              {{- toYaml .Values.container.readinessProbe.exec | nindent 14 }}
+              {{- toYaml .Values.container.healthcheck.readinessProbe.exec | nindent 14 }}
             {{- else }}
-            {{- toYaml .Values.container.readinessProbe | nindent 12 }}
+            {{- toYaml .Values.container.healthcheck.readinessProbe | nindent 12 }}
             {{- end }}
+          {{- end }}
+          env:
+            {{- toYaml .Values.container.env | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command:
