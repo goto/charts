@@ -31,14 +31,16 @@ container:
     - name: tcp
       containerPort: 8080
       protocol: TCP
-  livenessProbe:
-    httpGet:
-      path: /
-      port: tcp
-  readinessProbe:
-    httpGet:
-      path: /
-      port: tcp
+  healthcheck:
+    enabled: false
+    livenessProbe:
+      httpGet:
+        path: /
+        port: tcp
+    readinessProbe:
+      httpGet:
+        path: /
+        port: tcp
   volumeMounts:
   - name: join-sa-token
     mountPath: /var/run/secrets/tokens
