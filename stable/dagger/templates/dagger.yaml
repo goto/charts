@@ -36,7 +36,7 @@ spec:
     fs.cosn.bucket.region: ap-jakarta
 
     fs.oss.credentials.provider: com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider
-    fs.oss.endpoint: oss-ap-southeast-5.aliyuncs.com
+    fs.oss.endpoint: {{ .Values.fs_oss_endpoint }}
 
     metrics.reporters: stsd
     metrics.reporter.stsd.class: com.gojek.de.dagger.metrics.StatsDReporter
