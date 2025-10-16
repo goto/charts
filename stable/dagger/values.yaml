@@ -24,4 +24,4 @@ programArgs:
 extra_labels: {}
 savepointTriggerNonce: 1
 urn: "dagger:urn"
-oss_endpoint: "oss-ap-southeast-5-internal.aliyuncs.com"
+fs_oss_endpoint: "oss-ap-southeast-5-internal.aliyuncs.com"
