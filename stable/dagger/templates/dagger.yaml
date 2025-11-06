@@ -126,6 +126,44 @@ spec:
             defaultMode: 420
             secretName: flink-operator-gcp
         {{- end}}
+      {{- if (gt (len .Values.tolerations) 0) }}
+      
+      tolerations: {{- range $_, $toleration := .Values.tolerations }}
+        - key: {{ $toleration.key }}
+          operator: {{ $toleration.operator }}
+          value: "{{ $toleration.value }}"
+          effect: {{ $toleration.effect }}
+        {{- end }}
+      {{- end}}
+
+      {{- if or (gt (len .Values.nodeAffinityMatchExpressions.requiredDuringSchedulingIgnoredDuringExecution) 0) (gt (len .Values.nodeAffinityMatchExpressions.preferredDuringSchedulingIgnoredDuringExecution) 0) }}
+      affinity:
+        nodeAffinity:
+          {{- if (gt (len .Values.nodeAffinityMatchExpressions.requiredDuringSchedulingIgnoredDuringExecution) 0) }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions: {{- range $_, $expression := .Values.nodeAffinityMatchExpressions.requiredDuringSchedulingIgnoredDuringExecution }}
+                  - key: {{ $expression.key }}
+                    operator: {{ $expression.operator }}
+                    values: {{- range $expression.values }}
+                      - "{{ . }}"
+                    {{- end}}
+              {{- end}}
+          {{- end}}
+          {{- if (gt (len .Values.nodeAffinityMatchExpressions.preferredDuringSchedulingIgnoredDuringExecution) 0) }}
+          preferredDuringSchedulingIgnoredDuringExecution: {{- range $_, $expression := .Values.nodeAffinityMatchExpressions.preferredDuringSchedulingIgnoredDuringExecution }}
+            - weight: {{ $expression.weight}}   
+              preference:   
+                matchExpressions: {{- range $_, $pref := $expression.preference }}   
+                  - key: {{ $pref.key }}
+                    operator: {{ $pref.operator }}
+                    values: {{- range $pref.values }}
+                      - {{ . }}
+                    {{- end}}
+                {{- end}}
+          {{- end}}
+          {{- end}}
+      {{- end}}
   jobManager:
     resource:
       cpu: {{ .Values.resources.jobmanager.cpu }}
