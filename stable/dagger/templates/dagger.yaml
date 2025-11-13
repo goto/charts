@@ -143,9 +143,9 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions: {{- range $_, $expression := .Values.nodeAffinityMatchExpressions.requiredDuringSchedulingIgnoredDuringExecution }}
-                  - key: {{ $expression.key }}
-                    operator: {{ $expression.operator }}
-                    values: {{- range $expression.values }}
+                  - key: {{ $expression.Key }}
+                    operator: {{ $expression.Operator }}
+                    values: {{- range $expression.Values }}
                       - "{{ . }}"
                     {{- end}}
               {{- end}}
