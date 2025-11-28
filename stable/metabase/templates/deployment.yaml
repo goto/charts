@@ -127,6 +127,10 @@ spec:
           - name: MB_SITE_URL
             value: {{ .Values.metabase.siteUrl | quote }}
           {{- end }}
+          {{- if .Values.metabase.auditMaxRetentionDays }}
+          - name: MB_AUDIT_MAX_RETENTION_DAYS
+            value: {{ .Values.metabase.auditMaxRetentionDays | quote }}
+          {{- end }}
           {{- if .Values.metabase.secretConfig }}
           - name: NEW_RELIC_APP_NAME
             valueFrom:
