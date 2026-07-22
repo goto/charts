@@ -53,6 +53,9 @@ spec:
     metrics.scope.tm.job: taskmanager-job.godata-id-flink-operator.<tm_id>.<job_name>
     metrics.scope.task: task.godata-id-flink-operator.<tm_id>.<job_name>.<task_name>.<subtask_index>
     metrics.scope.operator: operator.godata-id-flink-operator.<tm_id>.<job_name>.<subtask_index>
+    {{- if .Values.kubernetes_taskmanager_service_account }}
+    kubernetes.taskmanager.service-account: {{ .Values.kubernetes_taskmanager_service_account }}
+    {{- end }}
   serviceAccount: flink
   podTemplate:
     apiVersion: v1
@@ -86,6 +89,10 @@ spec:
           {{- if eq .Values.cloud_provider "gcp" }}
             - mountPath: /var/secrets/google
               name: google-cloud-key
+          {{- end}}
+          {{- range $_, $mount := .Values.acl_mounts }}
+            - mountPath: {{ $mount.mountPath }}
+              name: {{ $mount.name }}
           {{- end}}
         - name: telegrafd
           image: telegraf:1.18.3-alpine
@@ -125,6 +132,23 @@ spec:
           secret:
             defaultMode: 420
             secretName: flink-operator-gcp
+        {{- end}}
+        {{- range $_, $mount := .Values.acl_mounts }}
+        - name: {{ $mount.name }}
+          {{- if eq $mount.type "secret" }}
+          secret:
+            defaultMode: 420
+            secretName: {{ $mount.secretName }}
+          {{- end }}
+          {{- if eq $mount.type "projected" }}
+          projected:
+            defaultMode: 420
+            sources:
+              - serviceAccountToken:
+                  audience: kafka
+                  expirationSeconds: 600
+                  path: token
+          {{- end }}
         {{- end}}
       {{- if (gt (len .Values.tolerations) 0) }}
       
