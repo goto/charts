@@ -21,6 +21,9 @@ spec:
         {{ $key }}: {{ $value }}
         {{- end }}
     spec:
+      {{- if .Values.service_account }}
+      serviceAccountName: {{ .Values.service_account }}
+      {{- end }}
       containers:
       - args:
         {{- range .Values.firehose.args }}
@@ -29,7 +32,7 @@ spec:
         name: {{ .Chart.Name }}
         image: "{{ .Values.firehose.image.repository }}:{{ .Values.firehose.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.firehose.image.pullPolicy }}
-        {{- if or (index .Values "init-firehose" "enabled") (gt (len .Values.mountSecrets) 0 ) }}
+        {{- if or (index .Values "init-firehose" "enabled") (gt (len .Values.mountSecrets) 0 ) (include "firehose.kafkaSecurityEnabled" .) }}
         volumeMounts:
         {{- if index .Values "init-firehose" "enabled" }}
         - mountPath: /work-dir
@@ -38,6 +41,20 @@ spec:
         {{- if (gt (len .Values.mountSecrets) 0 ) }}
         - mountPath: /etc/secret
           name: {{ include "firehose.fullname" . }}-mount
+        {{- end }}
+        {{- with .Values.kafka_security }}
+        {{- if .ssl_config_credential }}
+        - mountPath: /etc/secret/kafka-cert
+          name: kafka-cert
+        {{- end }}
+        {{- if .jaas_config_credential }}
+        - mountPath: /etc/secret/kafka
+          name: kafka-jaas
+        {{- end }}
+        {{- if .kafka_token_enabled }}
+        - mountPath: /var/run/secrets/kafka/serviceaccount
+          name: kafka-token
+        {{- end }}
         {{- end }}
         {{- end }}
         resources:
@@ -56,6 +73,15 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+        {{- with .Values.kafka_security }}
+        {{- with .truststore_password }}
+        - name: SOURCE_KAFKA_CONSUMER_CONFIG_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .secretName }}
+              key: {{ .key }}
+        {{- end }}
+        {{- end }}
       {{- if index .Values.telegraf.enabled }}
       - name: telegrafd
         image: "{{ .Values.telegraf.image.repository }}:{{ .Values.telegraf.image.tag }}"
@@ -83,7 +109,7 @@ spec:
         - mountPath: /work-dir
           name: workdir
       {{- end }}
-      {{if or (index .Values.telegraf.enabled) (index .Values "init-firehose" "enabled") (gt (len .Values.mountSecrets) 0 ) }}
+      {{if or (index .Values.telegraf.enabled) (index .Values "init-firehose" "enabled") (gt (len .Values.mountSecrets) 0 ) (include "firehose.kafkaSecurityEnabled" .) }}
       volumes:
       {{- if index .Values.telegraf.enabled }}
       - configMap:
@@ -105,6 +131,37 @@ spec:
               path: {{$mountSecret.path}}
           {{- end}}
       {{- end}}
+      {{- with .Values.kafka_security }}
+      {{- if .ssl_config_credential }}
+      - name: kafka-cert
+        secret:
+          secretName: {{ .ssl_config_credential }}
+          defaultMode: 420
+          optional: true
+          {{- if .truststore_filename }}
+          items:
+            - key: {{ .truststore_filename }}
+              path: {{ .truststore_filename }}
+          {{- end }}
+      {{- end }}
+      {{- if .jaas_config_credential }}
+      - name: kafka-jaas
+        secret:
+          secretName: {{ .jaas_config_credential }}
+          defaultMode: 420
+          optional: true
+      {{- end }}
+      {{- if .kafka_token_enabled }}
+      - name: kafka-token
+        projected:
+          defaultMode: 420
+          sources:
+            - serviceAccountToken:
+                audience: kafka
+                expirationSeconds: 600
+                path: token
+      {{- end }}
+      {{- end }}
       {{- end}}
 
       {{- if (gt (len .Values.tolerations) 0) }}
