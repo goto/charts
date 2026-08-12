@@ -88,6 +88,22 @@ telegraf:
 envSecrets: {}
 mountSecrets: []
 
+# Service account the pod runs as. For an ACL (SASL/SSL) kafka source this is the
+# identity the projected kafka token is minted against. Empty keeps the default.
+service_account: ""
+
+# ACL (SASL/SSL) kafka source support. Populated by Entropy from the stream's
+# security profile; empty by default so plaintext firehoses render unchanged.
+# All fields reference secrets that must already exist in the namespace.
+kafka_security: {}
+  # ssl_config_credential: kafka-central-cert   # secret holding the truststore
+  # truststore_filename: truststore.p12         # key in that secret, mounted at /etc/secret/kafka-cert
+  # truststore_password:                        # rendered as a secretKeyRef env var
+  #   secretName: scp-kafka-ssl-secrets
+  #   key: truststore_password
+  # jaas_config_credential: team-stream-jaas    # PLAIN/SCRAM jaas.conf, mounted at /etc/secret/kafka
+  # kafka_token_enabled: true                   # projected SA token (audience: kafka)
+
 autoscaler:
   enabled: false
   type: keda

@@ -15,6 +15,18 @@
 {{- end }}
 {{- end }}
 
+{{/*
+Renders a non-empty string when the kafka source stream needs ACL (SASL/SSL)
+volumes. Used to open the volumes / volumeMounts blocks, which are otherwise
+only emitted for telegraf, init-firehose and mountSecrets.
+*/}}
+{{- define "firehose.kafkaSecurityEnabled" -}}
+{{- $kafkaSecurity := .Values.kafka_security | default dict -}}
+{{- if or $kafkaSecurity.ssl_config_credential $kafkaSecurity.jaas_config_credential $kafkaSecurity.kafka_token_enabled -}}
+true
+{{- end -}}
+{{- end }}
+
 {{- define "firehose.telegraf.conf" }}
 [global_tags]
 {{- range $k, $v := .Values.telegraf.config.additional_global_tags }}
