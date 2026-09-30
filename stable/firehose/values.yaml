@@ -97,7 +97,7 @@ service_account: ""
 # All fields reference secrets that must already exist in the namespace.
 kafka_security: {}
   # ssl_config_credential: kafka-central-cert   # secret holding the truststore
-  # truststore_filename: truststore.p12         # key in that secret, mounted at /etc/secret/kafka-cert
+  # truststore_filename: truststore.p12         # key in that secret, mounted at /etc/secret
   # truststore_password:                        # rendered as a secretKeyRef env var
   #   secretName: scp-kafka-ssl-secrets
   #   key: truststore_password
