@@ -44,7 +44,7 @@ spec:
         {{- end }}
         {{- with .Values.kafka_security }}
         {{- if .ssl_config_credential }}
-        - mountPath: /etc/secret/kafka-cert
+        - mountPath: /etc/secret
           name: kafka-cert
         {{- end }}
         {{- if .jaas_config_credential }}
