@@ -51,10 +51,16 @@ spec:
         - mountPath: /etc/secret/kafka
           name: kafka-jaas
         {{- end }}
-        {{- if .kafka_token_enabled }}
+        {{- end }}
+        {{- with .Values.dlq_kafka_security }}
+        {{- if .ssl_config_credential }}
+        - mountPath: /etc/secret/dlq/certs
+          name: dlq-kafka-cert
+        {{- end }}
+        {{- end }}
+        {{- if (include "firehose.kafkaTokenEnabled" .) }}
         - mountPath: /var/run/secrets/kafka/serviceaccount
           name: kafka-token
-        {{- end }}
         {{- end }}
         {{- end }}
         resources:
@@ -76,6 +82,15 @@ spec:
         {{- with .Values.kafka_security }}
         {{- with .truststore_password }}
         - name: SOURCE_KAFKA_CONSUMER_CONFIG_SSL_TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .secretName }}
+              key: {{ .key }}
+        {{- end }}
+        {{- end }}
+        {{- with .Values.dlq_kafka_security }}
+        {{- with .truststore_password }}
+        - name: DLQ_KAFKA_SSL_TRUSTSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .secretName }}
@@ -151,7 +166,22 @@ spec:
           defaultMode: 420
           optional: true
       {{- end }}
-      {{- if .kafka_token_enabled }}
+      {{- end }}
+      {{- with .Values.dlq_kafka_security }}
+      {{- if .ssl_config_credential }}
+      - name: dlq-kafka-cert
+        secret:
+          secretName: {{ .ssl_config_credential }}
+          defaultMode: 420
+          optional: true
+          {{- if .truststore_filename }}
+          items:
+            - key: {{ .truststore_filename }}
+              path: {{ .truststore_filename }}
+          {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- if (include "firehose.kafkaTokenEnabled" .) }}
       - name: kafka-token
         projected:
           defaultMode: 420
@@ -160,7 +190,6 @@ spec:
                 audience: kafka
                 expirationSeconds: 600
                 path: token
-      {{- end }}
       {{- end }}
       {{- end}}
 
