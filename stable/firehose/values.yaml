@@ -104,6 +104,18 @@ kafka_security: {}
   # jaas_config_credential: team-stream-jaas    # PLAIN/SCRAM jaas.conf, mounted at /etc/secret/kafka
   # kafka_token_enabled: true                   # projected SA token (audience: kafka)
 
+# ACL (SASL/SSL) kafka DLQ producer support, used when DLQ_WRITER_TYPE=KAFKA and
+# the DLQ stream is secured. Populated by Entropy from the DLQ stream's security
+# profile; kept separate from kafka_security so the DLQ can live on a different
+# secured stream than the source. Empty by default.
+dlq_kafka_security: {}
+  # ssl_config_credential: dagstream-cert       # secret holding the truststore
+  # truststore_filename: truststore.p12         # key in that secret, mounted at /etc/secret/dlq/certs
+  # truststore_password:                        # rendered as DLQ_KAFKA_SSL_TRUSTSTORE_PASSWORD
+  #   secretName: dagstream-ssl-secrets
+  #   key: truststore_password
+  # kafka_token_enabled: true                   # projected SA token, shared with the source
+
 autoscaler:
   enabled: false
   type: keda
