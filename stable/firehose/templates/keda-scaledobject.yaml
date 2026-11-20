@@ -3,7 +3,7 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   labels: {{- range $key, $value := .Values.labels }}
-    {{ $key }}: {{ $value }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
     scaledobject.keda.sh/name: {{ include "firehose.fullname" . }}
   name: {{ include "firehose.fullname" . }}

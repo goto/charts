@@ -4,7 +4,7 @@ metadata:
   name: {{ include "firehose.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- range $key, $value := .Values.labels }}
-    {{ $key }}: {{ $value }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -18,7 +18,7 @@ spec:
       labels:
         app: {{ include "firehose.fullname" . }}
         {{- range $key, $value := .Values.labels }}
-        {{ $key }}: {{ $value }}
+        {{ $key }}: {{ $value | quote }}
         {{- end }}
     spec:
       {{- if .Values.service_account }}
