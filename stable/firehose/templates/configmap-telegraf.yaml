@@ -5,7 +5,7 @@ metadata:
   name: {{ include "firehose.fullname" . }}-telegraf
   namespace: {{ .Release.Namespace }}
   labels: {{- range $key, $value := .Values.labels }}
-    {{ $key }}: {{ $value }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
 data:
   telegraf.conf: |+

@@ -1,0 +1,45 @@
+suite: firehose labels
+templates:
+  - templates/deployment.yaml
+  # deployment.yaml includes the configmap for its checksum annotation
+  - templates/configmap-firehose.yaml
+release:
+  name: test
+tests:
+  - it: renders the default labels
+    template: templates/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels
+          value:
+            app: test-firehose
+            application: firehose
+      - equal:
+          path: metadata.labels.application
+          value: firehose
+
+  - it: renders boolean-like label values as strings
+    set:
+      labels:
+        sidecar.istio.io/inject: "false"
+    template: templates/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["sidecar.istio.io/inject"]
+          value: "false"
+      - equal:
+          path: metadata.labels["sidecar.istio.io/inject"]
+          value: "false"
+      - equal:
+          path: spec.template.metadata.labels.app
+          value: test-firehose
+
+  - it: renders boolean-like label values as strings on the configmap
+    set:
+      labels:
+        sidecar.istio.io/inject: "false"
+    template: templates/configmap-firehose.yaml
+    asserts:
+      - equal:
+          path: metadata.labels["sidecar.istio.io/inject"]
+          value: "false"

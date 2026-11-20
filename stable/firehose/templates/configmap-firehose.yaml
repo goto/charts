@@ -4,7 +4,7 @@ metadata:
   name: {{ include "firehose.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- range $key, $value := .Values.labels }}
-    {{ $key }}: {{ $value }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
 data:
   {{- toYaml .Values.firehose.config | nindent 2 }}

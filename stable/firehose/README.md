@@ -78,7 +78,7 @@ The following table lists the configurable parameters of Firehose chart and thei
 | init-firehose.image.pullPolicy | string | `"IfNotPresent"` | the Kubernetes [imagePullPolicy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) value for init-firehose container |
 | init-firehose.image.repository | string | `"busybox"` | docker repository to download init-firehose image |
 | init-firehose.image.tag | string | `"latest"` | init-firehose docker image tag |
-| labels | object | `{"application":"firehose"}` | labels for all resouces |
+| labels | object | `{"application":"firehose"}` | labels for all resouces; values are rendered as strings (e.g. `sidecar.istio.io/inject: "false"`) |
 | nameOverride | string | `""` | overrides the chart name when used in the naming of resources |
 | replicaCount | int | `1` | number of replicas of firehose pod |
 | telegraf.config.output.influxdb.database | string | `"test-db"` | db name for telegraf influxdb output |
